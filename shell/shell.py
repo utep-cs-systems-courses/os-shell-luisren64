@@ -29,7 +29,7 @@ def myReadline():
     while len(buf):
 
         #once we get to the end, we reset the buffer and return
-        if buf[i] == '/n': 
+        if buf[i] == '\n': 
             buf = buf[i+1: len(buf)]
             return convString
 
@@ -59,5 +59,14 @@ def myTokenizer(input):
     return argList
 
 
-def forkFunction(argList)
+def forkFunction(argList):
+    pid = os.getpid()
+
+    rc = os.fork()
+
+    if rc < 0:
+        os.write(1, ("Fork error %d\n").encode())
+        sys.exit(1)
+
+    elif rc == 0:
         
