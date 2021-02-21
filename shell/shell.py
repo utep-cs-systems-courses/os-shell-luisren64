@@ -7,8 +7,8 @@ import re
 def main():
     while True:
         os.write(1,("$").encode())
-        inp = myReadline()
-        if inp.equals("exit"):
+        input = myTokenizer(myReadline())
+        if input[0] == 'exit' || input[0] == 'Exit':
             break
         else:
             forkFunction(myTokenizer(inp))
@@ -18,23 +18,17 @@ def main():
 
 #Method to turn the user's input into a string
 def myReadline():
-    global buf
-
-    #Making sure the buffer exists
-    if buf== None:
-        buf = read(0,100)
+    input = os.read(0,100)
 
     convString = ''
     i = 0
-    while len(buf):
+    while i < len(input):
 
-        #once we get to the end, we reset the buffer and return
-        if buf[i] == '\n': 
-            buf = buf[i+1: len(buf)]
-            return convString
+        #checking if we've reached the newline character
+        if chr(input[i]) == '\n':
+            return input
 
-        convString += chr(buf[i])
-
+        convString += chr(input[i])
         i = i+1
 
     #if the input is empty, the resulting string is as well    
@@ -51,6 +45,9 @@ def myTokenizer(input):
             #We've found the end of the first command. Append it to the list
             argList.append(arg)
             arg = ''
+        #This is the last command in the line. Append it
+        elif i+1 == len(input)
+            argList.append(arg)
         else:
             arg += input[i]
 
@@ -59,7 +56,7 @@ def myTokenizer(input):
     return argList
 
 
-def forkFunction(argList):
+def forkFunction(args)
     pid = os.getpid()
 
     rc = os.fork()
@@ -68,5 +65,24 @@ def forkFunction(argList):
         os.write(1, ("Fork error %d\n").encode())
         sys.exit(1)
 
-    elif rc == 0:
-        
+    elif rc == 0: #child process created
+        os.write(1,("Child: My pid==%d. Parent's pid=%d\n" %
+                    (os.getpid(),pid)).encode())
+
+        for dir in re.split(":",os.environ['PATH']):
+            program = "%s/%s" % (dir,args[0])
+            try:
+                os.execve(program,args, os.environ)
+            except FileNotFoundError:
+                pass
+
+            os.write(2, ("Child: Error; Could not exec %s\n" % args[0]).encode())
+            sys.exit(1)
+
+    else:
+        os.write(1, ("Parent: My pid=%d. Child pid=%d\n" %
+                     (pid,rc)).encode())
+        childPidCode = os.wait()
+        os.write(1 ("Parent : Child %d terminated with exit code %d\n" %
+                    childPidCode).encode())
+                
