@@ -8,7 +8,7 @@ def main():
     while True:
         os.write(1,("$").encode())
         input = myTokenizer(myReadline())
-        if input[0] == 'exit' || input[0] == 'Exit':
+        if input[0] == 'exit' or input[0] == 'Exit':
             break
         else:
             forkFunction(myTokenizer(inp))
@@ -46,7 +46,7 @@ def myTokenizer(input):
             argList.append(arg)
             arg = ''
         #This is the last command in the line. Append it
-        elif i+1 == len(input)
+        elif (i+1)==len(input):
             argList.append(arg)
         else:
             arg += input[i]
@@ -56,7 +56,7 @@ def myTokenizer(input):
     return argList
 
 
-def forkFunction(args)
+def forkFunction(args):
     pid = os.getpid()
 
     rc = os.fork()
